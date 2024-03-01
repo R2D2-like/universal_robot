@@ -17,8 +17,8 @@
 
   <!-- Parameters we share with ur_robot_driver -->
   <arg name="controller_config_file" doc="Config file used for defining the ROS-Control controllers."/>
-  <arg name="controllers" default="joint_state_controller eff_joint_traj_controller"/>
-  <arg name="stopped_controllers" default="joint_group_eff_controller"/>
+  <arg name="controllers" default="joint_state_controller joint_group_vel_controller"/>
+  <!-- <arg name="stopped_controllers" default="joint_group_eff_controller"/> -->
 
   <!-- Gazebo parameters -->
   <arg name="gazebo_model_name" default="robot" doc="The name to give to the model in Gazebo (after spawning it)." />
@@ -52,6 +52,8 @@
   <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner"
     args="$(arg controllers)" output="screen" respawn="false" />
 
+  <arg name="stopped_controllers" default="joint_group_vel_controller"/>
+  
   <!-- Load other controllers, but do not start them -->
   <node name="ros_control_stopped_spawner" pkg="controller_manager" type="spawner"
     args="--stopped $(arg stopped_controllers)" output="screen" respawn="false" />

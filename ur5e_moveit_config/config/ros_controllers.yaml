@@ -1,7 +1,61 @@
 controller_list:
-- name: "scaled_pos_joint_traj_controller"
-  action_ns: follow_joint_trajectory
-  type: FollowJointTrajectory
+# - name: "scaled_pos_joint_traj_controller"
+#   action_ns: follow_joint_trajectory
+#   type: FollowJointTrajectory
+#   joints:
+#     - shoulder_pan_joint
+#     - shoulder_lift_joint
+#     - elbow_joint
+#     - wrist_1_joint
+#     - wrist_2_joint
+#     - wrist_3_joint
+
+# joint_state_controller:
+# - name: "joint_state_controller"
+#   action_ns: joint_states
+#   type: joint_state_controller/JointStateController
+#   publish_rate: &loop_hz 500
+
+# eff_joint_traj_controller:
+# - name: "effort_joint_trajectory_controller"
+#   action_ns: eff_joint_traj_controller
+#   type: effort_controllers/JointTrajectoryController
+#   joints: &robot_joints
+#     - shoulder_pan_joint
+#     - shoulder_lift_joint
+#     - elbow_joint
+#     - wrist_1_joint
+#     - wrist_2_joint
+#     - wrist_3_joint
+#   gains: # Required because we're controlling an effort interface
+#     shoulder_pan_joint: {p: 4000,  d: 200, i: 1, i_clamp: 1}
+#     shoulder_lift_joint: {p: 10000,  d: 200, i: 1, i_clamp: 1}
+#     elbow_joint: {p: 2000,  d: 20, i: 1, i_clamp: 1}
+#     wrist_1_joint: {p: 500,  d: 1, i: 1, i_clamp: 1}
+#     wrist_2_joint: {p: 500,  d: 1, i: 1, i_clamp: 1}
+#     wrist_3_joint: {p: 10,  d: 0.1, i: 0, i_clamp: 1} 
+#   constraints:
+#     goal_time: 0.6
+#     stopped_velocity_tolerance: 0.05
+#     shoulder_pan_joint: {trajectory: 0.1, goal: 0.1}
+#     shoulder_lift_joint: {trajectory: 0.1, goal: 0.1}
+#     elbow_joint: {trajectory: 0.1, goal: 0.1}
+#     wrist_1_joint: {trajectory: 0.1, goal: 0.1}
+#     wrist_2_joint: {trajectory: 0.1, goal: 0.1}
+#     wrist_3_joint: {trajectory: 0.1, goal: 0.1}
+#   stop_trajectory_duration: 0.5
+#   state_publish_rate: *loop_hz
+#   action_monitor_rate: 10
+
+# joint_group_eff_controller:
+# - name: "joint_group_effort_controller"
+#   action_ns: joint_group_effort_controller
+#   type: effort_controllers/JointGroupEffortController
+#   joints: *robot_joints
+
+# joint_group_vel_controller:
+- name: "joint_group_velocity_controller"
+  type: velocity_controllers/JointGroupVelocityController
   joints:
     - shoulder_pan_joint
     - shoulder_lift_joint
@@ -9,3 +63,4 @@ controller_list:
     - wrist_1_joint
     - wrist_2_joint
     - wrist_3_joint
+
