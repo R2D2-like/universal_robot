@@ -54,7 +54,7 @@ class Tutorial:
         self.move_group = move_group
         self.display_trajectory_publisher = display_trajectory_publisher
 
-    def go_to_joint_state(self):
+    def go_to_init_pose(self):
         # Copy class variables to local variables to make the web tutorials more clear.
         # In practice, you should use the class variables directly unless you have a good
         # reason not to.
@@ -70,7 +70,7 @@ class Tutorial:
         joint_goal = move_group.get_current_joint_values()
         joint_goal[0] = 1.57
         joint_goal[1] = -1.57
-        joint_goal[2] = 1.30
+        joint_goal[2] = 1.57#1.30
         joint_goal[3] = -1.57
         joint_goal[4] = -1.57
         joint_goal[5] = 0
@@ -89,6 +89,35 @@ class Tutorial:
         current_joints = move_group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 0.01)
 
+    def pressing(self):
+        #エンドエフェクタを現在位置から0.01m/s, 2秒間 z軸方向正の向きに下がる
+        move_group = self.move_group
+        pose_goal = move_group.get_current_pose().pose
+        pose_goal.position.z -= 0.02
+        move_group.set_pose_target(pose_goal)
+        plan = move_group.go(wait=True)
+        move_group.stop()
+        move_group.clear_pose_targets()
+
+    def lateral_movements(self):
+        #エンドエフェクタを現在位置から0.05m/s, 1秒間ずつ左右に揺れる
+        move_group = self.move_group
+        pose_goal = move_group.get_current_pose().pose
+        pose_goal.position.x -= 0.05
+        move_group.set_pose_target(pose_goal)
+        plan = move_group.go(wait=True)
+        move_group.stop()
+        move_group.clear_pose_targets()
+        rospy.sleep(1)
+        pose_goal.position.x += 0.05
+        move_group.set_pose_target(pose_goal)
+        plan = move_group.go(wait=True)
+        move_group.stop()
+        move_group.clear_pose_targets()
+
+
 if __name__ == '__main__':
     tutorial = Tutorial()
-    tutorial.go_to_joint_state()
+    tutorial.go_to_init_pose()
+    tutorial.pressing()
+    tutorial.lateral_movements()
