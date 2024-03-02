@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="ur5e_moveit_config" name="step1_commander" type="step1_commander.py" />
+    <node pkg="ur5e_moveit_config" name="step1_recorder" type="step1_recorder.py" />
+</launch>
