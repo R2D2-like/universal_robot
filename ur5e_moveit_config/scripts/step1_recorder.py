@@ -11,8 +11,8 @@ class Step1Recorder:
 
         # subscribers 
         self.force_torque_sub = \
-            rospy.Subscriber('/force_torque_sensor_controller', \
-                             WrenchStamped, self.force_torque_callback) #TODO: check the topic name
+            rospy.Subscriber('/wrench', \
+                             WrenchStamped, self.force_torque_callback) 
 
         # pressing
         self.pressing_client = rospy.ServiceProxy('/step1/pressing/stop', Empty)
