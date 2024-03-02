@@ -55,19 +55,43 @@ class Rollout:
 
         rospy.loginfo('Rollout node initialized')
 
-    def rollout(self):
+    def plan_cartesian_path(self):
+        # Copy class variables to local variables to make the web tutorials more clear.
+        # In practice, you should use the class variables directly unless you have a good
+        # reason not to.
+        ##
+        # Cartesian Paths
+        # ^^^^^^^^^^^^^^^
+        # You can plan a Cartesian path directly by specifying a list of waypoints
+        # for the end-effector to go through. If executing  interactively in a
+        # Python shell, set scale = 1.0.
+        ##
+        waypoints = []
+
+        wpose = self.move_group.get_current_pose().pose
         rollout_traj = np.load(DATA_PATH) #(2000, 3)
-        rate = rospy.Rate(10)
         for i in range(rollout_traj.shape[0]):
-            pose_goal = self.move_group.get_current_pose().pose
-            pose_goal.position.x = rollout_traj[i, 0]
-            pose_goal.position.y = rollout_traj[i, 1]
-            pose_goal.position.z = rollout_traj[i, 2]
-            self.move_group.set_pose_target(pose_goal)
-            plan = self.move_group.go(wait=True)
-            self.move_group.stop()
-            self.move_group.clear_pose_targets()
-            rate.sleep()
+            wpose.position.x = rollout_traj[i, 0]
+            wpose.position.y = rollout_traj[i, 1]
+            wpose.position.z = rollout_traj[i, 2]
+            waypoints.append(copy.deepcopy(wpose))
+
+        # We want the Cartesian path to be interpolated at a resolution of 1 cm
+        # which is why we will specify 0.01 as the eef_step in Cartesian
+        # translation.  We will disable the jump threshold by setting it to 0.0,
+        # ignoring the check for infeasible jumps in joint space, which is sufficient
+        # for this tutorial.
+        (plan, fraction) = self.move_group.compute_cartesian_path(
+            waypoints,   # waypoints to follow
+            0.01,        # eef_step
+            0.0)         # jump_threshold
+        
+        # Note: We are just planning, not asking move_group to actually move the robot yet:
+        return plan, fraction
+
+    def rollout(self):
+        plan = self.plan_cartesian_path()
+        self.move_group.execute(plan, wait=True)
         rospy.signal_shutdown('done')
 
 if __name__ == '__main__':
